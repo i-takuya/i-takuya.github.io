@@ -1,0 +1,51 @@
+## 本作戦の目標
+
+Dockerを使用してなんかサービスを始めたり始めなかったり。
+
+ruby sinatraを使用したサービスの基本と監視を実装する。
+
+### マイルストーン
+
+* Dockerfileを使った環境の整備と**テスト**
+* Docker-composeを使用した構成管理
+* Docker-swamを使用したCD
+* CD後のcontainerの**テスト**
+* 監視
+
+### Docker machine
+https://docs.docker.com/machine/overview/#whats-the-difference-between-docker-engine-and-docker-machine
+Docker Machine is a tool that lets you install Docker Engine on virtual hosts, and manage the hosts with docker-machine commands.
+
+* remote hostへのdocker engine自体の管理tool
+* 古いversionのmac,windows環境で(remote provisionが)動作できる唯一の方法
+ * boot2dockerの代替
+
+### Dockerfileを使ったテストについて
+やっぱりChefspec的なdockerfileに対するテストって無い気がする
+serverspec的なフレームワークならgossが良いかも(インテグレーション)
+dgossというのがdockerに対して使えそう
+macでのinstallについて
+https://github.com/aelsabbahy/goss/tree/master/extras/dgoss
+https://github.com/aelsabbahy/goss
+
+このディレクトリでは
+```
+dgoss run takinaga/sinatra
+```
+でテストが実施可能
+
+カバレッジ見たいな指標が無い気がする
+https://github.com/aelsabbahy/goss/blob/master/docs/manual.md
+https://github.com/aelsabbahy/goss/tree/master/extras/dgoss
+
+Rspecやserverspecでもdocker-api gemを利用するとできそう
+http://carefree-se.hatenablog.com/entry/2015/06/24/000510
+
+serverspecのbackend typeによりなにを使ってテスト対象のserver(or container)にアタッチするか選べそう
+http://serverspec.org/changes-of-v2.html
+ここら辺に記載あるんだけど、どんなtypeが選べるとかどういう挙動をするのかみたいな話が全くなくて困る。
+docker,ssh,localがありそう
+
+### サンプルrepo
+
+[sample-sinatra-docker]: https://github.com/i-takuya/sinatra-docker
