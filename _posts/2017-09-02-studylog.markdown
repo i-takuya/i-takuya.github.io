@@ -48,4 +48,6 @@ docker,ssh,localがありそう
 
 ### サンプルrepo
 
+[sample-sinatra-docker]
+
 [sample-sinatra-docker]: https://github.com/i-takuya/sinatra-docker
