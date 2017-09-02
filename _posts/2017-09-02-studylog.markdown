@@ -25,8 +25,10 @@ Docker Machine is a tool that lets you install Docker Engine on virtual hosts, a
 serverspec的なフレームワークならgossが良いかも(インテグレーション)
 dgossというのがdockerに対して使えそう
 macでのinstallについて
-https://github.com/aelsabbahy/goss/tree/master/extras/dgoss
-https://github.com/aelsabbahy/goss
+
+[dgoss](https://github.com/aelsabbahy/goss/tree/master/extras/dgoss)
+
+[goss](https://github.com/aelsabbahy/goss)
 
 このディレクトリでは
 ```
@@ -35,14 +37,16 @@ dgoss run takinaga/sinatra
 でテストが実施可能
 
 カバレッジ見たいな指標が無い気がする
-https://github.com/aelsabbahy/goss/blob/master/docs/manual.md
-https://github.com/aelsabbahy/goss/tree/master/extras/dgoss
+
+[manual for goss](https://github.com/aelsabbahy/goss/blob/master/docs/manual.md)
+[manual for dgoss](https://github.com/aelsabbahy/goss/tree/master/extras/dgoss)
 
 Rspecやserverspecでもdocker-api gemを利用するとできそう
+
 http://carefree-se.hatenablog.com/entry/2015/06/24/000510
 
 serverspecのbackend typeによりなにを使ってテスト対象のserver(or container)にアタッチするか選べそう
-http://serverspec.org/changes-of-v2.html
+[serverspec](http://serverspec.org/changes-of-v2.html)
 ここら辺に記載あるんだけど、どんなtypeが選べるとかどういう挙動をするのかみたいな話が全くなくて困る。
 docker,ssh,localがありそう
 
