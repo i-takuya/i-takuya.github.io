@@ -39,11 +39,12 @@ $ node promiseLoop.js
 とう言うわけで色々一から調査する。対象バージョンとしてはLTSである6.11
 
 Promiseと調べて出て来るワード一覧
-** Promise
-** Generator
-** bulebird
-** co
+* Promise
+* Generator
+* bulebird
+* co
 
+```
 　　 　 ＿__　　　　━┓
 　　 ／　　―＼ 　　┏┛
 　　／ノ　　(●)＼　 ・
@@ -55,6 +56,7 @@ Promiseと調べて出て来るワード一覧
 　　 　 |　　　　　　　|
 　　 　 |　　　　　　　|
 
+```
 
 ### コールバック地獄とは
 nodejsはデフォルトで用意されている関数も非同期の関数が多く、同期的な関数も徐々にDeprecatedにされている。
