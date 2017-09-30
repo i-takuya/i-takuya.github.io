@@ -1,0 +1,130 @@
+## 基本的にこれ見て
+http://azu.github.io/promises-book/
+
+### Promiseでloop?
+ていうか普通のループは何がだめなのか。
+```
+const exec = require('child_process').exec;
+var result = [];
+for(var i = 0;i < 3;i++) {
+    setTimeout(() => {
+        exeCmd('ls ./');
+    }, i * 1000);
+};
+
+console.log(result);
+
+function exeCmd(cmd) {
+    var start_time = new Date();
+    exec(cmd, (err, stdout, stderr) => {
+        if(err) {console.log(err);}
+        end_time = new Date();
+        result.push(end_time - start_time)
+    });
+}
+
+...
+// expect result
+$ node promiseLoop.jp
+['100', '102', '101']
+// actual result
+$ node promiseLoop.js
+[]
+```
+なんでか?nodejsってそういうやつだから。(雑)
+
+やろうとすると非同期な書き方をしなければならない.
+やふーでぐぐろう -> ????
+
+とう言うわけで色々一から調査する。対象バージョンとしてはLTSである6.11
+
+Promiseと調べて出て来るワード一覧
+** Promise
+** Generator
+** bulebird
+** co
+
+　　 　 ＿__　　　　━┓
+　　 ／　　―＼ 　　┏┛
+　　／ノ　　(●)＼　 ・
+.　｜　(●) 　 ⌒）＼
+.　｜　　 （__ノ￣　|
+　　＼　　　　　　　/
+　　　 ＼　　　　 _ノ
+　　　　/´　　 　 ｀＼
+　　 　 |　　　　　　　|
+　　 　 |　　　　　　　|
+
+
+### コールバック地獄とは
+nodejsはデフォルトで用意されている関数も非同期の関数が多く、同期的な関数も徐々にDeprecatedにされている。
+
+
+```
+getAsync("fileA.txt", function(error, result){
+    if(error){// 取得失敗時の処理
+        throw error;
+    }
+    //　取得後のデータを利用してapiを叩く
+    request(result, function(error, response, body) {
+        if(error) {
+            throw error;
+	}
+	// 取得した結果をもとにゴニョゴニョする以下略
+});
+```
+
+永遠に深いネストを掘り続けなければならない。これがコールバック地獄
+
+### Promise
+~~魔法の言葉これがあると非同期が同期っぽく書くことができる!!~~
+というわけではなく、**非同期処理のフレームワーク**らしい
+というわけでこれを上のサンプルコードを書き直すとこんな感じなりそう
+```
+var promise = getAsyncPromise("fileA.txt");
+promise.then(function(result){
+    var rp = requestPromise(result);
+    rp.then(function(result) {
+      //成功時の処理
+    }).catch(function(error) {
+      //エラー時の処理
+    });
+ }).catch(function(error) {
+   //エラー時の処理
+ });
+
+```
+**ネスト地獄直ってなくない?**
+いやなんか色んなサイトを見てもここらへん言及しているところ皆無で辛い。直ってねーよこれ処理を重ねてくごとにネスト深くなってるやん
+ただここで見てわかるように、非同期処理のフレームワーク化が出てきていることはわかる。
+つまり```then```のときに成功時の処理、```catchの時に```エラー時の処理というように今までは関数を定義している側が処理後どういった値を引数として渡すのかが自由に決めれていたのをPromiseがパターン化できている。
+
+また、フォーマットが決まっているためpromise同士ならthenでつなぐ事ができて
+
+```
+promise1().then(promise2).then(promise3)
+```
+的な実装の仕方もできる。
+
+#### Promise all
+allの場合rejectされた時点で処理が中断されるようなのですべて処理をした後に結果を処理するという処理ができない
+
+### bluebird
+http://bluebirdjs.com/docs/getting-started.html
+promiseでない関数やライブラリをすべてPromise化する。(promisification)
+
+#### アンチパターン
+http://bluebirdjs.com/docs/anti-patterns.html
+
+* 変な、promiseを返すな。基本的にpromiseのコンストラクタで生成したpromise objectを返すようにすればその途中で発生したエラーも伝搬してうまく処理することができる。deferは推奨されない。
+
+* 簡単なコールバックのためにラップする関数を作るならpromisifyを使うが良い。
+
+* 例外処理はpromiseを使うならtry,catchではなくthen,catchを使用しろ
+
+### generator
+https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/function*
+
+ざっくりいうとyieldで実行タイミングを操作できるっぽい、処理を抜け出すことも後から復帰することもできる関数
+
+
